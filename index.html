@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Собери свой дом</title>
   <style>
     body {
@@ -24,7 +24,6 @@
       padding: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
-      font-size: 15px;
     }
     button {
       background: #2a9d8f;
@@ -32,31 +31,27 @@
       font-weight: bold;
       cursor: pointer;
       border: none;
-      transition: 0.2s;
+      transition: background 0.3s ease;
     }
     button:hover {
       background: #21867a;
     }
-    h2, h3 {
+    h2 {
       text-align: center;
     }
-    .thanks {
+    #thanks {
       display: none;
       text-align: center;
       color: #2a9d8f;
-      font-size: 20px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-
   <div class="container">
     <h2>Собери свой дом</h2>
 
-    <!-- ✅ Netlify форма -->
-    <form name="house" method="POST" data-netlify="true" onsubmit="this.style.display='none';document.getElementById('thanks').style.display='block'">
-      <input type="hidden" name="form-name" value="house">
-
+    <form id="houseForm" action="https://formspree.io/f/mmwpwpgdl" method="POST">
       <label>Тип дома:</label>
       <select name="Тип дома">
         <option>Каркасный</option>
@@ -80,25 +75,55 @@
       </select>
 
       <label>Цвет фасада:</label>
-      <input type="text" name="Цвет фасада" placeholder="Например: тёмно-серый">
+      <input type="text" name="Цвет фасада" placeholder="Например: тёмно-серый" />
 
       <label>Дополнительные пожелания:</label>
       <textarea name="Пожелания" placeholder="Напишите, что важно учесть"></textarea>
 
       <label>Ваше имя:</label>
-      <input type="text" name="Имя" required>
+      <input type="text" name="Имя" required />
 
       <label>Контакт (Telegram или телефон):</label>
-      <input type="text" name="Контакт" required>
+      <input type="text" name="Контакт" required />
 
+      <input type="hidden" name="_captcha" value="false" />
       <button type="submit">Отправить заявку</button>
     </form>
 
-    <!-- ✅ Сообщение после отправки -->
-    <div id="thanks" class="thanks">
-      <h3>✅ Спасибо! Ваша заявка отправлена.</h3>
+    <div id="thanks">
+      ✅ Спасибо! Ваша заявка успешно отправлена.
     </div>
   </div>
 
+  <script>
+    const form = document.getElementById("houseForm");
+    const thanks = document.getElementById("thanks");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      try {
+        console.log("[FORM] ▶️ Отправка данных...");
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: formData,
+          headers: { Accept: "application/json" }
+        });
+
+        if (response.ok) {
+          console.log("[FORM] ✅ Успешная отправка!");
+          form.reset();
+          form.style.display = "none";
+          thanks.style.display = "block";
+        } else {
+          console.error("[FORM] ❌ Ошибка при отправке:", response.statusText);
+          alert("Ошибка при отправке. Попробуйте позже.");
+        }
+      } catch (err) {
+        console.error("[FORM] ⚠️ Ошибка сети:", err);
+        alert("Ошибка соединения. Проверьте интернет.");
+      }
+    });
+  </script>
 </body>
 </html>
