@@ -1,39 +1,104 @@
-<form name="house" method="POST" data-netlify="true">
-  <input type="hidden" name="form-name" value="house">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Собери свой дом</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    select, input, textarea, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+    button {
+      background: #2a9d8f;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #21867a;
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    .thanks {
+      display: none;
+      text-align: center;
+      color: #2a9d8f;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
 
-  <label>Тип дома:</label>
-  <select name="Тип дома">
-    <option>Каркасный</option>
-    <option>Модульный</option>
-    <option>Барнхаус</option>
-    <option>A-фрейм</option>
-  </select>
+  <div class="container">
+    <h2>Собери свой дом</h2>
 
-  <label>Этажность:</label>
-  <select name="Этажность">
-    <option>1 этаж</option>
-    <option>1.5 этажа</option>
-    <option>2 этажа</option>
-  </select>
+    <!-- ✅ Netlify форма -->
+    <form name="house" method="POST" data-netlify="true" onsubmit="this.style.display='none';document.getElementById('thanks').style.display='block'">
+      <input type="hidden" name="form-name" value="house">
 
-  <label>Тип крыши:</label>
-  <select name="Тип крыши">
-    <option>Односкатная</option>
-    <option>Двускатная</option>
-    <option>Плоская</option>
-  </select>
+      <label>Тип дома:</label>
+      <select name="Тип дома">
+        <option>Каркасный</option>
+        <option>Модульный</option>
+        <option>Барнхаус</option>
+        <option>A-фрейм</option>
+      </select>
 
-  <label>Цвет фасада:</label>
-  <input type="text" name="Цвет фасада" placeholder="Например: тёмно-серый">
+      <label>Этажность:</label>
+      <select name="Этажность">
+        <option>1 этаж</option>
+        <option>1.5 этажа</option>
+        <option>2 этажа</option>
+      </select>
 
-  <label>Дополнительные пожелания:</label>
-  <textarea name="Пожелания" placeholder="Напишите, что важно учесть"></textarea>
+      <label>Тип крыши:</label>
+      <select name="Тип крыши">
+        <option>Односкатная</option>
+        <option>Двускатная</option>
+        <option>Плоская</option>
+      </select>
 
-  <label>Ваше имя:</label>
-  <input type="text" name="Имя" required>
+      <label>Цвет фасада:</label>
+      <input type="text" name="Цвет фасада" placeholder="Например: тёмно-серый">
 
-  <label>Контакт (Telegram или телефон):</label>
-  <input type="text" name="Контакт" required>
+      <label>Дополнительные пожелания:</label>
+      <textarea name="Пожелания" placeholder="Напишите, что важно учесть"></textarea>
 
-  <button type="submit">Отправить заявку</button>
-</form>
+      <label>Ваше имя:</label>
+      <input type="text" name="Имя" required>
+
+      <label>Контакт (Telegram или телефон):</label>
+      <input type="text" name="Контакт" required>
+
+      <button type="submit">Отправить заявку</button>
+    </form>
+
+    <!-- ✅ Сообщение после отправки -->
+    <div id="thanks" class="thanks">
+      <h3>✅ Спасибо! Ваша заявка отправлена.</h3>
+    </div>
+  </div>
+
+</body>
+</html>
