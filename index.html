@@ -61,9 +61,11 @@
     <div id="error">❌ Ошибка при отправке! Проверьте консоль (F12 → Console)</div>
   </div>
 
-  <script>
+<script>
+// Отправка данных формы в Telegram + Email (formspree + formsubmit)
 const form = document.getElementById("houseForm");
 const thanks = document.getElementById("thanks");
+const error = document.getElementById("error");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -75,23 +77,71 @@ form.addEventListener("submit", async (e) => {
 
   try {
     const start = Date.now();
-    console.log("[FORM] ▶️ Начало отправки...");
+    console.log("[FORM] ▶️ Начало отправки в 3 сервиса...");
 
-    // Отправляем данные на Netlify Function
-    const response = await fetch("/.netlify/functions/sendToTelegram", {
+    // 1️⃣ Отправка в Telegram через Netlify Function
+    console.log("[TELEGRAM] 📤 Отправка в Telegram...");
+    const telegramPromise = fetch("/.netlify/functions/sendToTelegram", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
+    }).catch(err => {
+      console.error("[TELEGRAM] ❌ Ошибка:", err);
+      return { ok: false };
     });
 
-    if (response.ok) {
-      console.log("[FORM] ✅ Успешная отправка!");
+    // 2️⃣ Отправка на почту через Formspree
+    console.log("[FORMSPREE] 📤 Отправка через Formspree...");
+    const formspreePromise = fetch("https://formspree.io/f/xovpgrdb", {
+      method: "POST",
+      body: formData,
+      headers: { Accept: "application/json" }
+    }).catch(err => {
+      console.error("[FORMSPREE] ❌ Ошибка:", err);
+      return { ok: false };
+    });
+
+    // 3️⃣ Отправка на почту через FormSubmit
+    console.log("[FORMSUBMIT] 📤 Отправка через FormSubmit...");
+    const formsubmitPromise = fetch("https://formsubmit.co/ajax/5737c0e3afdf03a3379818dae29080c0", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).catch(err => {
+      console.error("[FORMSUBMIT] ❌ Ошибка:", err);
+      return { ok: false };
+    });
+
+    // Ожидаем все три отправки одновременно
+    const [telegramRes, formspreeRes, formsubmitRes] = await Promise.all([
+      telegramPromise,
+      formspreePromise,
+      formsubmitPromise
+    ]);
+
+    // Проверяем результаты
+    const telegramOk = telegramRes.ok;
+    const formspreeOk = formspreeRes.ok;
+    const formsubmitOk = formsubmitRes.ok;
+
+    console.log("[TELEGRAM] " + (telegramOk ? "✅" : "❌") + " Статус:", telegramRes.status);
+    console.log("[FORMSPREE] " + (formspreeOk ? "✅" : "❌") + " Статус:", formspreeRes.status);
+    console.log("[FORMSUBMIT] " + (formsubmitOk ? "✅" : "❌") + " Статус:", formsubmitRes.status);
+
+    // Если хотя бы один способ сработал - показываем успех
+    if (telegramOk || formspreeOk || formsubmitOk) {
+      console.log("[FORM] ✅ Успешная отправка (работает хотя бы один способ)!");
       form.reset();
       form.style.display = "none";
       thanks.style.display = "block";
     } else {
-      console.error("[FORM] ❌ Ошибка при отправке:", response.statusText);
-      alert("Ошибка при отправке. Проверьте позже.");
+      // Если все три не сработали
+      console.error("[FORM] ❌ Все способы отправки не сработали");
+      error.style.display = "block";
+      setTimeout(() => { error.style.display = "none"; }, 5000);
     }
 
     console.log(
@@ -101,10 +151,10 @@ form.addEventListener("submit", async (e) => {
     );
   } catch (err) {
     console.error("[FORM] ⚠️ Ошибка сети:", err);
-    alert("Ошибка соединения. Проверьте интернет.");
+    error.style.display = "block";
+    setTimeout(() => { error.style.display = "none"; }, 5000);
   }
 });
-
-  </script>
+</script>
 </body>
 </html>
