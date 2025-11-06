@@ -1,6 +1,6 @@
 export async function handler(event, context) {
-  const TELEGRAM_TOKEN = "8512288959:AAGzU-9zvE6uprOXz7tBsz9EPvCudpC6BT8";
-  const CHAT_ID = "-4780600720";
+  const TELEGRAM_TOKEN = "7623687903:AAHKCDJKU1S3NwpgijsgegK0GNk_dglYKGI";
+  const CHAT_ID = "-1002485012284";
 
   const data = JSON.parse(event.body || "{}");
 
